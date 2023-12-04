@@ -5,8 +5,10 @@ on:
     branches: [ main ]
     paths-ignore:
     - 'README.md'
+ 
 env:
   DOTNET_VERSION: '6.0.x'
+
 jobs:
   build-and-test:
     name: build-and-test-${{matrix.os}}
@@ -26,3 +28,27 @@ jobs:
       run: dotnet build --configuration Release --no-restore
     - name: Test
       run: dotnet test --no-restore --verbosity normal
+    - name: Generate single-file executable
+      if: runner.os == 'Windows'
+      run: |
+        dotnet publish
+        echo %cd%
+        dir /S IntelHexCombiner\bin\Debug\net6.0\win-x64\publish\
+
+# TODO
+#  create-release:
+#    if: startsWith(github.ref, 'refs/tags/v')
+#    needs: build-and-test
+#    runs-on: windows-latest
+#    #runs-on: ${{ matrix.os }}
+#    #strategy:
+#    #  matrix:
+#    #    os: [ubuntu-latest, windows-latest, macOS-latest]
+#    steps:
+#    - uses: 'marvinpinto/action-automatic-releases@latest'
+#      with:
+#        repo_token: '${{ secrets.GITHUB_TOKEN }}'
+#        prerelease: true
+#        files: |
+#          packages/automatic-releases/dist/index.js
+#      id: 'automatic_releases'
