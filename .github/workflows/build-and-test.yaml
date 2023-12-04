@@ -32,8 +32,8 @@ jobs:
       if: runner.os == 'Windows'
       run: |
         dotnet publish
-        echo %cd%
-        dir /S IntelHexCombiner\bin\Debug\net6.0\win-x64\publish\
+        pwd
+        dir -Recurse IntelHexCombiner\bin\Debug\net6.0\win-x64\
 
 # TODO
 #  create-release:
