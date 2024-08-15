@@ -12,7 +12,6 @@ public class ProgramSetCrc
 
         Console.WriteLine($"pem-fw-crc-writer.exe <input.hex> <output.hex> <start address in base 16> <size/bytes in base 10>");
 
-
         char[] test = "123456789".ToCharArray();
         byte[] test_bytes = Encoding.ASCII.GetBytes(test);
         Debug.WriteLine($"CRC test vector: crc(\"{test}\") = {String.Format("0x{0,8:X8}", Crc.Crc32BE(test_bytes, 9))}");
@@ -29,7 +28,7 @@ public class ProgramSetCrc
                 }
             }
 
-            Console.WriteLine($"Will read {inputFile} to memory, calculate its CRC , out = {outputFile}, ", args);
+            Console.WriteLine($"Will read {inputFile} to memory, calculate its CRC (ignoring last 4 bytes), write that CRC in the last 4 bytes, and save the output as {outputFile}.");
             BinaryImage image = LoadHexFile(inputFile, startAddress, size);
             SaveHexFile(image, outputFile);
         }
@@ -52,7 +51,7 @@ public class ProgramSetCrc
     {
         Debug.WriteLine($"SaveHexFile({outHexFile})");
         uint crc = image.CalcCRC();
-        Debug.WriteLine($"crc = {String.Format("0x{0,8:X8}", crc)}");
+        Console.WriteLine($"crc = {String.Format("0x{0,8:X8}", crc)}");
         image.WriteCrcLE(crc);
         Stream stream = new FileStream(outHexFile, FileMode.Create);
         image.SaveHex(stream);
