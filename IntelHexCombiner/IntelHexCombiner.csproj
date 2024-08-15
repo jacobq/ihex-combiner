@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
@@ -10,9 +10,21 @@
     <PublishTrimmed>true</PublishTrimmed>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <SelfContained>true</SelfContained>
+    <StartupObject>IntelHexCombiner.Program</StartupObject>
+    <ApplicationIcon>combine-data.ico</ApplicationIcon>
+    <Version>1.0.0.0</Version>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="combine-data.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="HexIO" Version="3.0.5" />
     <PackageReference Include="System.IO.Hashing" Version="8.0.0" />
   </ItemGroup>
 
