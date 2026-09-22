@@ -12,10 +12,9 @@ class BinaryImage
         (fwImage, fwImageBytes, appStartAddress) = HexFileReader.GetBytesFromHexFileStream(stream, startAddress, maxSize);
     }
 
-    public uint CalcCRC()
+    public uint CalcCRC(int numBytesProtectedByCrc)
     {
-        uint numBytesProtectedByCrc = fwImageBytes - 4;
-        uint expectedCrc = Crc.Crc32BE(fwImage, (int)numBytesProtectedByCrc);
+        uint expectedCrc = Crc.Crc32BE(fwImage, numBytesProtectedByCrc);
         // DEBUG
         //HexFileReader.PrintByteArray(fwImage, fwImageBytes, (uint)appStartAddress);
         //Console.WriteLine($"appStartAddress = {appStartAddress}, fwImageBytes = {fwImageBytes}, numBytesProtectedByCrc = {numBytesProtectedByCrc}");

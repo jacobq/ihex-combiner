@@ -57,7 +57,7 @@ public class ProgramSetCrc
 
     static private void WriteCRC(BinaryImage image, int crc_offset)
     {
-        uint crc = image.CalcCRC();
+        uint crc = image.CalcCRC(crc_offset);
         Console.WriteLine($"crc = {String.Format("0x{0,8:X8}", crc)} @ crc_offset = {crc_offset}");
         image.WriteCrcLE(crc, crc_offset);
     }
