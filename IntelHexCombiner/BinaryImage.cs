@@ -8,6 +8,7 @@ class BinaryImage
 
     public BinaryImage(Stream stream, Int64 startAddress = -1, int maxSize = 4 * 1024 * 1024)
     {
+        Console.WriteLine($"startAddress = {startAddress}, maxSize = {maxSize}");
         (fwImage, fwImageBytes, appStartAddress) = HexFileReader.GetBytesFromHexFileStream(stream, startAddress, maxSize);
     }
 
@@ -30,12 +31,12 @@ class BinaryImage
         fwImage[fwImageBytes - 1] = (byte)((crc >> 0) & 0xFF);
     }
 
-    public void WriteCrcLE(uint crc)
+    public void WriteCrcLE(uint crc, int crc_offset)
     {
-        fwImage[fwImageBytes - 4] = (byte)((crc >> 0) & 0xFF);
-        fwImage[fwImageBytes - 3] = (byte)((crc >> 8) & 0xFF);
-        fwImage[fwImageBytes - 2] = (byte)((crc >> 16) & 0xFF);
-        fwImage[fwImageBytes - 1] = (byte)((crc >> 24) & 0xFF);
+        fwImage[crc_offset] = (byte)((crc >> 0) & 0xFF);
+        fwImage[crc_offset + 1] = (byte)((crc >> 8) & 0xFF);
+        fwImage[crc_offset + 2] = (byte)((crc >> 16) & 0xFF);
+        fwImage[crc_offset + 3] = (byte)((crc >> 24) & 0xFF);
     }
 
 

@@ -9,8 +9,10 @@ public class ProgramSetCrc
     {
         Int64 startAddress = 0x08008000;
         int size = 80 * 1024;
+        int crc_offset = size - 4;
 
-        Console.WriteLine($"pem-fw-crc-writer.exe <input.hex> <output.hex> <start address in base 16> <size/bytes in base 10>");
+        // Usage
+        Console.WriteLine($"pem-fw-crc-writer.exe <input.hex> <output.hex> <start address in base 16> <size/bytes in base 10> [<crc_offset> = size - 4]");
 
         char[] test = "123456789".ToCharArray();
         byte[] test_bytes = Encoding.ASCII.GetBytes(test);
@@ -25,11 +27,17 @@ public class ProgramSetCrc
                 if (args.Length >= 4)
                 {
                     size = int.Parse(args[3], NumberStyles.Number);
+                    crc_offset = size - 4;
+                    if (args.Length >= 5)
+                    {
+                        crc_offset = int.Parse(args[4], NumberStyles.Number);
+                    }
                 }
             }
 
             Console.WriteLine($"Will read {inputFile} to memory, calculate its CRC (ignoring last 4 bytes), write that CRC in the last 4 bytes, and save the output as {outputFile}.");
             BinaryImage image = LoadHexFile(inputFile, startAddress, size);
+            WriteCRC(image, crc_offset);
             SaveHexFile(image, outputFile);
         }
         else
@@ -47,12 +55,15 @@ public class ProgramSetCrc
         return image;
     }
 
+    static private void WriteCRC(BinaryImage image, int crc_offset)
+    {
+        uint crc = image.CalcCRC();
+        Console.WriteLine($"crc = {String.Format("0x{0,8:X8}", crc)} @ crc_offset = {crc_offset}");
+        image.WriteCrcLE(crc, crc_offset);
+    }
+
     static private void SaveHexFile(BinaryImage image, string outHexFile)
     {
-        Debug.WriteLine($"SaveHexFile({outHexFile})");
-        uint crc = image.CalcCRC();
-        Console.WriteLine($"crc = {String.Format("0x{0,8:X8}", crc)}");
-        image.WriteCrcLE(crc);
         Stream stream = new FileStream(outHexFile, FileMode.Create);
         image.SaveHex(stream);
         stream.Close();
